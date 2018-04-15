@@ -1,0 +1,8 @@
+
+signal Q integer; -- conteggio 
+signal c3, c2, c1, c0 : integer; -- cifre
+
+c3<=Q/1000;   
+c2<=(Q/100)mod 10;
+c1<=(Q/10) mod 10;
+c0<=Q mod 10;
