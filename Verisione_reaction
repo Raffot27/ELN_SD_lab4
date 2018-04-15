@@ -1,0 +1,92 @@
+library ieee;
+use ieee.STD_LOGIC_1164.all;
+use ieee.numeric_std.all;
+
+entity Reaction_timer is
+	generic ( dly : time :=1 ms;
+				 N : integer :=4);
+	port 
+		(
+		clk	: in std_logic;
+		ingresso : in unsigned( 7 downto 0);
+		reset, alt: in std_logic;
+	   led : out std_logic;	
+		segmenti0, segmenti1, segmenti2, segmenti3 : out unsigned (6 downto 0)		
+		);
+		end Reaction_timer;
+		
+architecture struct of Reaction_timer is
+--clock modificato
+signal clk_mod : std_logic;
+signal cnt : integer range 0 to 24999 := 0;
+--fine
+signal intervallo : integer;
+signal Start, Stop: std_logic; --Questo sarebbe il LEDR0//Key3
+signal tempo_impiegato : integer;
+signal period : time;
+signal Q :integer; -- conteggio 
+signal c3, c2, c1, c0 : integer; -- cifre
+
+
+
+
+component decoder_decimal IS
+	port 
+		(Q   : IN integer;
+		Segmenti : OUT unsigned (6 downto 0)
+		);
+	end component;
+
+begin
+--clock mod
+Divisore : process (clk)
+begin
+if (clk'event and clk = '1') then
+if (cnt = 24999) then
+clk_mod <= not(clk_mod);
+cnt <=0;
+else
+cnt <= cnt +1;
+end if;
+end if;
+end process;
+--fine
+
+intervallo <=to_integer(ingresso); 
+period<=intervallo * dly;
+
+process(reset, start,stop, clk_mod,Q)
+
+begin
+	if (reset = '1') then
+		Q<=0;
+			Start<= '0';
+			--Stop <= '0';
+		
+			
+elsif(clk_mod'event and clk_mod='1') then --Inizio conta
+Start <= '1' after period;
+if (Start='1' and Stop = '0' and reset = '0') then
+	Q<=Q+1;											
+	c3<=Q/1000;   
+	c2<=(Q/100)mod 10;
+	c1<=(Q/10) mod 10;
+	c0<=Q mod 10;	
+					
+if(Q > 9999) then --Condizione di perdente
+	c0 <= 10;
+	c1 <= 11;
+	c2 <= 12;
+	c3 <= 13;
+	--Stop <= '1';
+end if;
+end if;		
+end if;
+end process;
+unita_display:	decoder_decimal port map(c0,segmenti0  );
+decina_display: decoder_decimal port map(c1,segmenti1 );
+centinaia_display: decoder_decimal port map(c2,segmenti2);
+migliaia_display: decoder_decimal port map(c3,segmenti3);
+stop <= alt;
+led <= start;
+end struct;
