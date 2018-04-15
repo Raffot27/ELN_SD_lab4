@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity decoder_bin_decimale IS
 	port 
 		(
-			Clock : IN std_logic;
+			
 			Q   : IN unsigned(3 downto 0);
 			Segmenti : OUT unsigned (6 downto 0)
 		);
