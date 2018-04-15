@@ -16,7 +16,7 @@ port (T, CLK, Clr: in std_logic;
 	    Q: out std_logic
 	 );
 end component;
-begin
+begin 
 Q<=ex;
 fix(0) <= Enable;
 Flip_0 : T_flipflop port map(fix(0), Clk, Clear, ex(0));
