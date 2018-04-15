@@ -3,7 +3,7 @@ use ieee.STD_LOGIC_1164.all;
 use ieee.numeric_std.all;
 
 entity counter_16_sincrono is
-	generic ( N : integer:=4);
+	generic ( N : integer:=16);
 	port 
 		(
 		Enable, CLK, Clear: in std_logic; 
