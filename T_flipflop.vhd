@@ -1,4 +1,4 @@
-library ieee;
+library ieee; 
 use ieee.STD_LOGIC_1164.all;
 
 entity T_flipflop is
